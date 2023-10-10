@@ -1,0 +1,80 @@
+import os
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def show_menu():
+    print("To-Do List Application")
+    print("1. View tasks")
+    print("2. Add task")
+    print("3. Mark task as done")
+    print("4. Remove task")
+    print("5. Exit")
+    print()
+
+def view_tasks():
+    with open("tasks.txt", "r") as file:
+        tasks = file.readlines()
+        if tasks:
+            print("Tasks:")
+            for idx, task in enumerate(tasks, start=1):
+                print(f"{idx}. {task.strip()}")
+        else:
+            print("No tasks found.")
+
+def add_task():
+    task = input("Enter a new task: ")
+    with open("tasks.txt", "a") as file:
+        file.write(task + "\n")
+    print("Task added successfully!")
+
+def mark_task_done():
+    view_tasks()
+    try:
+        task_number = int(input("Enter the task number to mark as done: "))
+        with open("tasks.txt", "r") as file:
+            tasks = file.readlines()
+        if 1 <= task_number <= len(tasks):
+            tasks[task_number - 1] = "[Done] " + tasks[task_number - 1]
+            with open("tasks.txt", "w") as file:
+                file.writelines(tasks)
+            print("Task marked as done!")
+        else:
+            print("Invalid task number.")
+    except ValueError:
+        print("Invalid input. Please enter a valid task number.")
+
+def remove_task():
+    view_tasks()
+    try:
+        task_number = int(input("Enter the task number to remove: "))
+        with open("tasks.txt", "r") as file:
+            tasks = file.readlines()
+        if 1 <= task_number <= len(tasks):
+            removed_task = tasks.pop(task_number - 1)
+            with open("tasks.txt", "w") as file:
+                file.writelines(tasks)
+            print(f"Task '{removed_task.strip()}' removed successfully!")
+        else:
+            print("Invalid task number.")
+    except ValueError:
+        print("Invalid input. Please enter a valid task number.")
+
+if __name__ == "__main__":
+    while True:
+        clear_screen()
+        show_menu()
+        choice = input("Enter your choice: ")
+        if choice == "1":
+            view_tasks()
+        elif choice == "2":
+            add_task()
+        elif choice == "3":
+            mark_task_done()
+        elif choice == "4":
+            remove_task()
+        elif choice == "5":
+            print("Goodbye!")
+            break
+        else:
+            input("Invalid choice. Press Enter to continue...")
